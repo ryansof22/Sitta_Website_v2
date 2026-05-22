@@ -1,100 +1,38 @@
-// 1. GREETING
-// js/script.js
-
-function updateGreeting() {
-    const greetingElement = document.getElementById("greeting");
-    if (!greetingElement) return;
-
-    const hour = new Date().getHours();
-    let greetText = "";
-
-    // Logika penentuan waktu
-    if (hour >= 5 && hour < 11) {
-        greetText = "Selamat pagi";
-    } else if (hour >= 11 && hour < 15) {
-        greetText = "Selamat siang";
-    } else if (hour >= 15 && hour < 18) {
-        greetText = "Selamat sore";
-    } else {
-        greetText = "Selamat malam";
-    }
-
-    // Mengambil nama dari sessionStorage (yang disimpan saat login)
-    const namaUser = sessionStorage.getItem("namaUser") || "Pengguna";
-    
-    // Menampilkan pesan sesuai format yang diminta
-    greetingElement.innerText = `${greetText}, ${namaUser}`;
-}
-
-// Pastikan fungsi dipanggil saat halaman dashboard dimuat
-window.addEventListener("DOMContentLoaded", () => {
-    if (window.location.pathname.includes("dashboard.html")) {
-        updateGreeting();
-    }
-});
-
-// 2. LOGIN (Memperbaiki jalur ke folder html/)
-const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-        const pass = document.getElementById("password").value;
-        const user = dataPengguna.find(u => u.email === email && u.password === pass);
-
-        if (user) {
-            sessionStorage.setItem("namaUser", user.nama);
-            // KUNCI: Karena index.html ada di root, maka pindah ke html/dashboard.html
-            window.location.href = "html/dashboard.html"; 
-        } else {
-            alert("Email atau Password salah!");
+new Vue({
+    el: '#app',
+    data: {
+        paketList: [
+            { kode: "PAKET-UT-001", nama: "PAKET IPS Dasar", isi: ["EKMA4116","EKMA4115"], harga: 120000 },
+            { kode: "PAKET-UT-002", nama: "PAKET IPA Dasar", isi: ["BIOL4201","FISIP4001"], harga: 140000 }
+        ],
+        tracking: {
+            "DO2025-001": { nim: "123456789", nama: "Rina Wulandari", status: "Dalam Perjalanan", total: 120000 }
+        },
+        form: { nim: '', nama: '' },
+        selectedPaketIndex: null
+    },
+    computed: {
+        generatedDoNumber() {
+            const year = new Date().getFullYear();
+            const count = Object.keys(this.tracking).length + 1;
+            return `DO${year}-${count.toString().padStart(3, '0')}`;
         }
-    });
-}
-
-// 3. STOK (Memperbaiki jalur gambar ke assets/img/)
-function tampilkanStok() {
-    const tableBody = document.getElementById("stokTableBody");
-    if (!tableBody) return;
-    tableBody.innerHTML = "";
-    dataBahanAjar.forEach(item => {
-        // Karena file .html ada di folder /html, maka naik satu tingkat ke ../assets/
-        const imgPath = `../assets/${item.cover}`; 
-        tableBody.innerHTML += `
-            <tr>
-                <td><img src="${imgPath}" width="60" style="border-radius:4px"></td>
-                <td>${item.kodeBarang}</td>
-                <td>${item.namaBarang}</td>
-                <td>${item.stok}</td>
-                <td><button onclick="tambahStok('${item.kodeBarang}')">Tambah</button></td>
-            </tr>`;
-    });
-}
-
-function tambahStok(kode) {
-    const item = dataBahanAjar.find(i => i.kodeBarang === kode);
-    if (item) { item.stok++; tampilkanStok(); }
-}
-
-// 4. TRACKING
-function cariTracking() {
-    const noDO = document.getElementById("noDO").value;
-    const data = dataTracking[noDO];
-    const container = document.getElementById("hasilTracking");
-    if (data) {
-        container.style.display = "block";
-        document.getElementById("namaMhs").innerText = data.nama;
-        document.getElementById("statusKirim").innerText = "Status: " + data.status;
-        const tabel = document.getElementById("tabelPerjalanan");
-        tabel.innerHTML = "<tr><th>Waktu</th><th>Keterangan</th></tr>";
-        data.perjalanan.forEach(p => {
-            tabel.innerHTML += `<tr><td>${p.waktu}</td><td>${p.keterangan}</td></tr>`;
-        });
-    } else { alert("Nomor DO tidak ditemukan!"); }
-}
-
-// INIT
-window.addEventListener("DOMContentLoaded", () => {
-    if (window.location.pathname.includes("html/dashboard.html")) updateGreeting();
-    if (window.location.pathname.includes("html/stok.html")) tampilkanStok();
+    },
+    methods: {
+        simpanDO() {
+            const paket = this.paketList[this.selectedPaketIndex];
+            const newId = this.generatedDoNumber;
+            
+            this.$set(this.tracking, newId, {
+                nim: this.form.nim,
+                nama: this.form.nama,
+                status: "Diproses",
+                total: paket.harga
+            });
+            
+            alert("DO Berhasil Dibuat: " + newId);
+            this.form = { nim: '', nama: '' };
+            this.selectedPaketIndex = null;
+        }
+    }
 });
