@@ -2,54 +2,56 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SITTA UT</title>
+    <title>Tracking DO - SITTA UT</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 </head>
 <body>
-    <main class="login-container">
-        <div class="logo-wrapper">
-            <img src="assets/img/logo-ut.png" alt="Logo UT" style="width: 100px; margin-bottom: 15px;" onerror="this.style.display='none'">
-        </div>
-        <h2>Selamat Datang</h2>
-        <p>Aplikasi SITTA Universitas Terbuka</p>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email (rina@ut.ac.id)" required>
-            <input type="password" id="password" placeholder="Password (rina123)" required>
-            <button type="submit">Masuk</button>
+    <div id="app">
+        <a href="index.html">⬅ Kembali ke Beranda</a>
+        <h2>Input Delivery Order Baru</h2>
+
+        <form @submit.prevent="simpanDO">
+            <div>
+                <label>Nomor DO (Auto):</label>
+                <input :value="generatedDoNumber" disabled>
+            </div>
+            <div>
+                <label>NIM:</label>
+                <input v-model="form.nim" required>
+            </div>
+            <div>
+                <label>Nama:</label>
+                <input v-model="form.nama" required>
+            </div>
+            <div>
+                <label>Paket:</label>
+                <select v-model="selectedPaketIndex" required>
+                    <option v-for="(p, index) in paketList" :value="index">
+                        {{ p.kode }} - {{ p.nama }}
+                    </option>
+                </select>
+            </div>
+
+            <div v-if="selectedPaketIndex !== null" class="detail-box">
+                <p>Isi Paket: {{ paketList[selectedPaketIndex].isi.join(', ') }}</p>
+                <p>Harga: Rp {{ paketList[selectedPaketIndex].harga }}</p>
+            </div>
+
+            <button type="submit">Buat DO</button>
         </form>
-        <div class="links">
-            <a href="javascript:void(0)" id="forgotBtn">Lupa password?</a>
-            <p>Belum punya akun? <a href="javascript:void(0)" id="registerBtn">Daftar</a></p>
-        </div>
-    </main>
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h3 id="modalTitle">Informasi</h3>
-            <p id="modalText"></p>
-        </div>
+        <hr>
+        <h3>Daftar Tracking Terbaru</h3>
+        <table border="1" width="100%">
+            <tr v-for="(val, key) in tracking">
+                <td>{{ key }}</td>
+                <td>{{ val.nama }} ({{ val.nim }})</td>
+                <td>{{ val.status }}</td>
+                <td>Total: Rp {{ val.total }}</td>
+            </tr>
+        </table>
     </div>
-
-    <script src="js/data.js"></script>
-    <script src="js/script.js"></script>
-    <script>
-        const modal = document.getElementById("myModal");
-        const closeModal = document.getElementById("closeModal");
-        
-        document.getElementById("forgotBtn").onclick = () => {
-            modal.style.display = "block";
-            document.getElementById("modalTitle").innerText = "Lupa Password";
-            document.getElementById("modalText").innerText = "Silakan hubungi admin IT di UPBJJ setempat.";
-        };
-        document.getElementById("registerBtn").onclick = () => {
-            modal.style.display = "block";
-            document.getElementById("modalTitle").innerText = "Pendaftaran";
-            document.getElementById("modalText").innerText = "Pendaftaran dilakukan melalui sistem internal UT.";
-        };
-        closeModal.onclick = () => modal.style.display = "none";
-        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
-    </script>
+    <script src="js/tracking-app.js"></script>
 </body>
 </html>
