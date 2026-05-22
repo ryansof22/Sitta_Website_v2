@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SITTA UT</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="login-container">
+        <div class="logo-wrapper">
+            <img src="assets/img/logo-ut.png" alt="Logo UT" style="width: 100px; margin-bottom: 15px;" onerror="this.style.display='none'">
+        </div>
+        <h2>Selamat Datang</h2>
+        <p>Aplikasi SITTA Universitas Terbuka</p>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email (rina@ut.ac.id)" required>
+            <input type="password" id="password" placeholder="Password (rina123)" required>
+            <button type="submit">Masuk</button>
+        </form>
+        <div class="links">
+            <a href="javascript:void(0)" id="forgotBtn">Lupa password?</a>
+            <p>Belum punya akun? <a href="javascript:void(0)" id="registerBtn">Daftar</a></p>
+        </div>
+    </main>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h3 id="modalTitle">Informasi</h3>
+            <p id="modalText"></p>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        const modal = document.getElementById("myModal");
+        const closeModal = document.getElementById("closeModal");
+        
+        document.getElementById("forgotBtn").onclick = () => {
+            modal.style.display = "block";
+            document.getElementById("modalTitle").innerText = "Lupa Password";
+            document.getElementById("modalText").innerText = "Silakan hubungi admin IT di UPBJJ setempat.";
+        };
+        document.getElementById("registerBtn").onclick = () => {
+            modal.style.display = "block";
+            document.getElementById("modalTitle").innerText = "Pendaftaran";
+            document.getElementById("modalText").innerText = "Pendaftaran dilakukan melalui sistem internal UT.";
+        };
+        closeModal.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
+    </script>
+</body>
+</html>
