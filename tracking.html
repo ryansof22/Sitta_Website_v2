@@ -16,14 +16,17 @@
                 <label>Nomor DO (Auto):</label>
                 <input :value="generatedDoNumber" disabled>
             </div>
+            <br>
             <div>
                 <label>NIM:</label>
                 <input v-model="form.nim" required>
             </div>
+            <br>
             <div>
                 <label>Nama:</label>
                 <input v-model="form.nama" required>
             </div>
+            <br>
             <div>
                 <label>Paket:</label>
                 <select v-model="selectedPaketIndex" required>
@@ -32,6 +35,7 @@
                     </option>
                 </select>
             </div>
+            <br>
 
             <div v-if="selectedPaketIndex !== null" class="detail-box">
                 <p>Isi Paket: {{ paketList[selectedPaketIndex].isi.join(', ') }}</p>
