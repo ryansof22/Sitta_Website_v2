@@ -2,54 +2,73 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SITTA UT</title>
+    <title>Stok Bahan Ajar - SITTA UT</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 </head>
 <body>
-    <main class="login-container">
-        <div class="logo-wrapper">
-            <img src="assets/img/logo-ut.png" alt="Logo UT" style="width: 100px; margin-bottom: 15px;" onerror="this.style.display='none'">
-        </div>
-        <h2>Selamat Datang</h2>
-        <p>Aplikasi SITTA Universitas Terbuka</p>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email (rina@ut.ac.id)" required>
-            <input type="password" id="password" placeholder="Password (rina123)" required>
-            <button type="submit">Masuk</button>
+    <div id="app">
+        <a href="index.html">⬅ Kembali ke Beranda</a>
+        <h2>Halaman Stok Bahan Ajar</h2>
+
+        <section class="filter-box">
+            <label>UT-Daerah:</label>
+            <select v-model="filterUpbjj">
+                <option value="">Semua Daerah</option>
+                <option v-for="u in upbjjList" :value="u">{{ u }}</option>
+            </select>
+
+            <span v-if="filterUpbjj">
+                <label>Kategori:</label>
+                <select v-model="filterKategori">
+                    <option value="">Semua Kategori</option>
+                    <option v-for="k in kategoriList" :value="k">{{ k }}</option>
+                </select>
+            </span>
+
+            <label>
+                <input type="checkbox" v-model="showLowStock"> Filter Stok Menipis/Kosong
+            </label>
+            <button @click="resetFilter">Reset Filter</button>
+        </section>
+
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Kode/Judul</th>
+                    <th>Kategori</th>
+                    <th>UPBJJ</th>
+                    <th>Lokasi</th>
+                    <th>Stok (Qty/Safety)</th>
+                    <th>Status</th>
+                    <th>Catatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in filteredStok" :key="item.kode">
+                    <td><strong>{{ item.kode }}</strong><br>{{ item.judul }}</td>
+                    <td>{{ item.kategori }}</td>
+                    <td>{{ item.upbjj }}</td>
+                    <td>{{ item.lokasiRak }}</td>
+                    <td>{{ item.qty }} / {{ item.safety }}</td>
+                    <td :class="getStatusClass(item)">{{ getStatusText(item) }}</td>
+                    <td v-html="item.catatanHTML"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Tambah Bahan Ajar Baru</h3>
+        <form @submit.prevent="tambahStok">
+            <input v-model="newStok.kode" placeholder="Kode MK" required>
+            <input v-model="newStok.judul" placeholder="Judul MK" required>
+            <select v-model="newStok.upbjj" required>
+                <option v-for="u in upbjjList" :value="u">{{ u }}</option>
+            </select>
+            <input type="number" v-model.number="newStok.qty" placeholder="Qty" required>
+            <input type="number" v-model.number="newStok.safety" placeholder="Safety" required>
+            <button type="submit">Tambah Data</button>
         </form>
-        <div class="links">
-            <a href="javascript:void(0)" id="forgotBtn">Lupa password?</a>
-            <p>Belum punya akun? <a href="javascript:void(0)" id="registerBtn">Daftar</a></p>
-        </div>
-    </main>
-
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h3 id="modalTitle">Informasi</h3>
-            <p id="modalText"></p>
-        </div>
     </div>
-
-    <script src="js/data.js"></script>
-    <script src="js/script.js"></script>
-    <script>
-        const modal = document.getElementById("myModal");
-        const closeModal = document.getElementById("closeModal");
-        
-        document.getElementById("forgotBtn").onclick = () => {
-            modal.style.display = "block";
-            document.getElementById("modalTitle").innerText = "Lupa Password";
-            document.getElementById("modalText").innerText = "Silakan hubungi admin IT di UPBJJ setempat.";
-        };
-        document.getElementById("registerBtn").onclick = () => {
-            modal.style.display = "block";
-            document.getElementById("modalTitle").innerText = "Pendaftaran";
-            document.getElementById("modalText").innerText = "Pendaftaran dilakukan melalui sistem internal UT.";
-        };
-        closeModal.onclick = () => modal.style.display = "none";
-        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
-    </script>
+    <script src="js/stok-app.js"></script>
 </body>
 </html>
