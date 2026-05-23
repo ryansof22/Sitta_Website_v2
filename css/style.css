@@ -1,116 +1,51 @@
-/* Palet Warna: 
-   Hitam Utama: #1a1a1a
-   Emas Utama: #D4AF37
-   Emas Terang: #FFD700
-   Teks Putih: #f4f4f4
-*/
-
 body {
     background-color: #1a1a1a;
     color: #f4f4f4;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     padding: 30px;
-    line-height: 1.6;
 }
 
 h1, h2, h3 {
     color: #D4AF37;
-    text-transform: uppercase;
-    letter-spacing: 2px;
     border-bottom: 2px solid #D4AF37;
     padding-bottom: 10px;
+    text-transform: uppercase;
 }
 
-a {
-    color: #FFD700;
-    text-decoration: none;
-    font-weight: bold;
-}
+a { color: #FFD700; text-decoration: none; font-weight: bold; }
 
-a:hover {
-    text-decoration: underline;
-}
+/* Table Styling */
+table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #252525; }
+th { background-color: #D4AF37; color: #1a1a1a; padding: 12px; }
+td { border: 1px solid #333; padding: 12px; }
 
-/* Navigasi Utama */
-nav ul {
-    list-style: none;
-    padding: 0;
-}
+/* Status Colors per Soal */
+.text-green { color: #2ecc71; font-weight: bold; } /* Aman [cite: 44] */
+.text-orange { color: #f39c12; font-weight: bold; } /* Menipis [cite: 45] */
+.text-red { color: #e74c3c; font-weight: bold; } /* Kosong [cite: 46] */
 
-nav li {
-    background: #2a2a2a;
-    margin: 10px 0;
-    padding: 15px;
-    border-left: 5px solid #D4AF37;
-    transition: 0.3s;
-}
-
-nav li:hover {
-    background: #333;
-    transform: translateX(10px);
-}
-
-/* Tabel */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    background: #252525;
-}
-
-th {
-    background-color: #D4AF37;
-    color: #1a1a1a;
-    padding: 12px;
-    text-align: left;
-}
-
-td {
-    border: 1px solid #333;
-    padding: 12px;
-}
-
-tr:nth-child(even) {
-    background-color: #2a2a2a;
-}
-
-/* Status Colors (Tetap memperhatikan fungsionalitas soal) */
-.text-green { color: #2ecc71; font-weight: bold; } /* Aman */
-.text-orange { color: #f39c12; font-weight: bold; } /* Menipis */
-.text-red { color: #e74c3c; font-weight: bold; } /* Kosong */
-
-/* Box & Form */
+/* Form & Boxes */
 .filter-box, .detail-box, form {
     background: #2a2a2a;
     padding: 20px;
     margin: 20px 0;
-    border: 1px solid #444;
     border-radius: 8px;
+    border: 1px solid #444;
 }
 
 input, select, button {
     background: #333;
     border: 1px solid #D4AF37;
     color: white;
-    padding: 8px 12px;
+    padding: 8px;
     border-radius: 4px;
-    margin-right: 10px;
 }
 
 button {
     background: #D4AF37;
     color: #1a1a1a;
-    font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    font-weight: bold;
 }
 
-button:hover {
-    background: #FFD700;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-
-/* Detail Box Specific */
-.detail-box {
-    border-left: 5px solid #FFD700;
-}
+button:hover { background: #FFD700; }
