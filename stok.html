@@ -4,70 +4,76 @@
     <meta charset="UTF-8">
     <title>Stok Bahan Ajar - SITTA UT</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 <body>
     <div id="app">
-        <a href="index.html">⬅ Kembali ke Beranda</a>
-        <h2>Halaman Stok Bahan Ajar</h2>
+        <div class="navbar">
+            <a href="index.html">Home</a>
+            <a href="stok.html" style="text-decoration: underline;">Stok Bahan Ajar</a>
+            <a href="tracking.html">Tracking DO</a>
+        </div>
 
-        <section class="filter-box">
-            <label>UT-Daerah:</label>
-            <select v-model="filterUpbjj">
-                <option value="">Semua Daerah</option>
-                <option v-for="u in upbjjList" :value="u">{{ u }}</option>
-            </select>
+        <div style="padding: 20px;">
+            <h2 class="gold-text">Manajemen Stok Bahan Ajar</h2>
 
-            <span v-if="filterUpbjj">
-                <label>Kategori:</label>
-                <select v-model="filterKategori">
-                    <option value="">Semua Kategori</option>
-                    <option v-for="k in kategoriList" :value="k">{{ k }}</option>
+            <div class="card">
+                <h3 class="gold-text">Tambah Stok Baru</h3>
+                <input v-model="newStok.kode" placeholder="Kode">
+                <input v-model="newStok.judul" placeholder="Judul">
+                <select v-model="newStok.upbjj">
+                    <option value="">Pilih UPBJJ</option>
+                    <option v-for="u in upbjjList" :value="u">{{u}}</option>
                 </select>
-            </span>
+                <input type="number" v-model.number="newStok.qty" placeholder="Qty">
+                <input type="number" v-model.number="newStok.safety" placeholder="Safety">
+                <button @click="tambahStok">Tambah</button>
+                <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
+            </div>
 
-            <label>
-                <input type="checkbox" v-model="showLowStock"> Filter Stok Menipis/Kosong
-            </label>
-            <button @click="resetFilter">Reset Filter</button>
-        </section>
+            <div class="card">
+                <h3 class="gold-text">Filter & Sort</h3>
+                <select v-model="filterUPBJJ">
+                    <option value="">Semua UT-Daerah</option>
+                    <option v-for="u in upbjjList" :value="u">{{u}}</option>
+                </select>
 
-        <table border="1" width="100%">
-            <thead>
-                <tr>
-                    <th>Kode/Judul</th>
-                    <th>Kategori</th>
-                    <th>UPBJJ</th>
-                    <th>Lokasi</th>
-                    <th>Stok (Qty/Safety)</th>
-                    <th>Status</th>
-                    <th>Catatan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in filteredStok" :key="item.kode">
-                    <td><strong>{{ item.kode }}</strong><br>{{ item.judul }}</td>
-                    <td>{{ item.kategori }}</td>
-                    <td>{{ item.upbjj }}</td>
-                    <td>{{ item.lokasiRak }}</td>
-                    <td>{{ item.qty }} / {{ item.safety }}</td>
-                    <td :class="getStatusClass(item)">{{ getStatusText(item) }}</td>
-                    <td v-html="item.catatanHTML"></td>
-                </tr>
-            </tbody>
-        </table>
+                <select v-if="filterUPBJJ" v-model="filterKategori">
+                    <option value="">Semua Kategori</option>
+                    <option v-for="k in kategoriList" :value="k">{{k}}</option>
+                </select>
 
-        <h3>Tambah Bahan Ajar Baru</h3>
-        <form @submit.prevent="tambahStok">
-            <input v-model="newStok.kode" placeholder="Kode MK" required>
-            <input v-model="newStok.judul" placeholder="Judul MK" required>
-            <select v-model="newStok.upbjj" required>
-                <option v-for="u in upbjjList" :value="u">{{ u }}</option>
-            </select>
-            <input type="number" v-model.number="newStok.qty" placeholder="Qty" required>
-            <input type="number" v-model.number="newStok.safety" placeholder="Safety" required>
-            <button type="submit">Tambah Data</button>
-        </form>
+                <label><input type="checkbox" v-model="isCritical"> Stok Kritis (Qty < Safety)</label>
+                
+                <select v-model="sortBy">
+                    <option value="judul">Urut Judul</option>
+                    <option value="qty">Urut Stok</option>
+                    <option value="harga">Urut Harga</option>
+                </select>
+                <button @click="resetFilter">Reset</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kode/Judul</th>
+                        <th>UPBJJ</th>
+                        <th>Qty / Safety</th>
+                        <th>Status</th>
+                        <th>Catatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in filteredStok" :key="item.kode">
+                        <td><strong>{{item.kode}}</strong><br>{{item.judul}}</td>
+                        <td>{{item.upbjj}}</td>
+                        <td>{{item.qty}} / {{item.safety}}</td>
+                        <td :class="statusClass(item)">{{ getStatus(item) }}</td>
+                        <td v-html="item.catatanHTML"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script src="js/stok-app.js"></script>
 </body>
