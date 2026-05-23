@@ -8,38 +8,37 @@
 </head>
 <body>
     <div id="app">
-        <a href="index.html">⬅ Kembali ke Beranda</a>
-        <h2>Halaman Stok Bahan Ajar</h2>
+        <a href="index.html">⬅ Kembali</a>
+        <h2>Manajemen Stok Bahan Ajar</h2>
 
-        <section class="filter-box">
+        <div class="filter-box">
             <label>UT-Daerah:</label>
             <select v-model="filterUpbjj">
-                <option value="">Semua Daerah</option>
+                <option value="">-- Semua Daerah --</option>
                 <option v-for="u in upbjjList" :value="u">{{ u }}</option>
             </select>
 
-            <span v-if="filterUpbjj">
-                <label>Kategori:</label>
-                <select v-model="filterKategori">
-                    <option value="">Semua Kategori</option>
-                    <option v-for="k in kategoriList" :value="k">{{ k }}</option>
-                </select>
-            </span>
+            <transition name="fade">
+                <span v-if="filterUpbjj">
+                    <label>Kategori:</label>
+                    <select v-model="filterKategori">
+                        <option value="">-- Semua Kategori --</option>
+                        <option v-for="k in kategoriList" :value="k">{{ k }}</option>
+                    </select>
+                </span>
+            </transition>
 
-            <label>
-                <input type="checkbox" v-model="showLowStock"> Filter Stok Menipis/Kosong
-            </label>
-            <button @click="resetFilter">Reset Filter</button>
-        </section>
+            <label><input type="checkbox" v-model="onlyReorder"> Butuh Re-order</label>
+            <button @click="resetFilter">Reset</button>
+        </div>
 
-        <table border="1" width="100%">
+        <table>
             <thead>
                 <tr>
                     <th>Kode/Judul</th>
                     <th>Kategori</th>
                     <th>UPBJJ</th>
-                    <th>Lokasi</th>
-                    <th>Stok (Qty/Safety)</th>
+                    <th>Stok</th>
                     <th>Status</th>
                     <th>Catatan</th>
                 </tr>
@@ -49,24 +48,23 @@
                     <td><strong>{{ item.kode }}</strong><br>{{ item.judul }}</td>
                     <td>{{ item.kategori }}</td>
                     <td>{{ item.upbjj }}</td>
-                    <td>{{ item.lokasiRak }}</td>
                     <td>{{ item.qty }} / {{ item.safety }}</td>
-                    <td :class="getStatusClass(item)">{{ getStatusText(item) }}</td>
+                    <td :class="statusColor(item)">{{ statusText(item) }}</td>
                     <td v-html="item.catatanHTML"></td>
                 </tr>
             </tbody>
         </table>
 
-        <h3>Tambah Bahan Ajar Baru</h3>
-        <form @submit.prevent="tambahStok">
-            <input v-model="newStok.kode" placeholder="Kode MK" required>
-            <input v-model="newStok.judul" placeholder="Judul MK" required>
-            <select v-model="newStok.upbjj" required>
+        <h3>Tambah Stok Baru</h3>
+        <form @submit.prevent="addBahanAjar">
+            <input v-model="newEntry.kode" placeholder="Kode MK" required>
+            <input v-model="newEntry.judul" placeholder="Judul" required>
+            <select v-model="newEntry.upbjj" required>
                 <option v-for="u in upbjjList" :value="u">{{ u }}</option>
             </select>
-            <input type="number" v-model.number="newStok.qty" placeholder="Qty" required>
-            <input type="number" v-model.number="newStok.safety" placeholder="Safety" required>
-            <button type="submit">Tambah Data</button>
+            <input type="number" v-model.number="newEntry.qty" placeholder="Qty" required>
+            <input type="number" v-model.number="newEntry.safety" placeholder="Safety" required>
+            <button type="submit">Simpan</button>
         </form>
     </div>
     <script src="js/stok-app.js"></script>
