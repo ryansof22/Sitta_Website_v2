@@ -3,7 +3,7 @@ new Vue({
     data: {
         upbjjList: ["Jakarta", "Surabaya", "Makassar", "Padang", "Denpasar"],
         kategoriList: ["MK Wajib", "MK Pilihan", "Praktikum", "Problem-Based"],
-        stok: [
+        stok: JSON.parse(localStorage.getItem('sitta_stok')) || [
             { kode: "EKMA4116", judul: "Pengantar Manajemen", kategori: "MK Wajib", upbjj: "Jakarta", lokasiRak: "R1-A3", harga: 65000, qty: 28, safety: 20, catatanHTML: "<em>Edisi 2024</em>" },
             { kode: "EKMA4115", judul: "Pengantar Akuntansi", kategori: "MK Wajib", upbjj: "Jakarta", lokasiRak: "R1-A4", harga: 60000, qty: 7, safety: 15, catatanHTML: "<strong>Cover baru</strong>" },
             { kode: "BIOL4201", judul: "Biologi Umum", kategori: "Praktikum", upbjj: "Surabaya", lokasiRak: "R3-B2", harga: 80000, qty: 12, safety: 10, catatanHTML: "Butuh pendingin" },
@@ -30,9 +30,11 @@ new Vue({
             console.log("Filter UPBJJ berubah menjadi: " + newVal);
         },
         stok: {
-            handler() { console.log("Data stok diperbarui!"); },
+            handler(newData) {
+                localStorage.setItem('sitta_stok', JSON.stringify(newData));
+                console.log("Database Stok diperbarui di LocalStorage");
+            },
             deep: true
-        }
     },
     methods: {
         getStatusText(item) {
