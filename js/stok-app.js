@@ -3,49 +3,58 @@ new Vue({
     data: {
         upbjjList: ["Jakarta", "Surabaya", "Makassar", "Padang", "Denpasar"],
         kategoriList: ["MK Wajib", "MK Pilihan", "Praktikum", "Problem-Based"],
-        stok: JSON.parse(localStorage.getItem('db_stok')) || [
-            { kode: "EKMA4116", judul: "Pengantar Manajemen", kategori: "MK Wajib", upbjj: "Jakarta", lokasiRak: "R1-A3", harga: 65000, qty: 28, safety: 20, catatanHTML: "<em>Edisi 2024</em>" }
+        // Cek localStorage, jika kosong gunakan data default
+        stok: JSON.parse(localStorage.getItem('sitta_stok_db')) || [
+            { kode: "EKMA4116", judul: "Pengantar Manajemen", kategori: "MK Wajib", upbjj: "Jakarta", lokasiRak: "R1-A3", harga: 65000, qty: 28, safety: 20, catatanHTML: "<em>Edisi 2024</em>" },
+            { kode: "EKMA4115", judul: "Pengantar Akuntansi", kategori: "MK Wajib", upbjj: "Jakarta", lokasiRak: "R1-A4", harga: 60000, qty: 7, safety: 15, catatanHTML: "<strong>Cover baru</strong>" },
+            { kode: "BIOL4201", judul: "Biologi Umum", kategori: "Praktikum", upbjj: "Surabaya", lokasiRak: "R3-B2", harga: 80000, qty: 12, safety: 10, catatanHTML: "Butuh pendingin" }
         ],
         filterUpbjj: '',
         filterKategori: '',
-        onlyReorder: false,
-        newEntry: { kode: '', judul: '', upbjj: 'Jakarta', qty: 0, safety: 0, kategori: 'MK Wajib', lokasiRak: 'TBA' }
+        showLowStock: false,
+        newStok: { kode: '', judul: '', upbjj: 'Jakarta', qty: 0, safety: 0, kategori: 'MK Wajib', lokasiRak: 'TBA' }
     },
     computed: {
         filteredStok() {
             return this.stok.filter(item => {
                 const matchUpbjj = !this.filterUpbjj || item.upbjj === this.filterUpbjj;
                 const matchKategori = !this.filterKategori || item.kategori === this.filterKategori;
-                const matchReorder = !this.onlyReorder || (item.qty < item.safety || item.qty === 0);
-                return matchUpbjj && matchKategori && matchReorder;
+                const matchLow = !this.showLowStock || (item.qty < item.safety || item.qty === 0);
+                return matchUpbjj && matchKategori && matchLow;
             });
         }
     },
     watch: {
+        // Otomatis simpan ke localStorage setiap ada perubahan data stok
         stok: {
-            handler(val) { localStorage.setItem('db_stok', JSON.stringify(val)); },
+            handler(newVal) {
+                localStorage.setItem('sitta_stok_db', JSON.stringify(newVal));
+            },
             deep: true
         },
-        filterUpbjj(val) { if (!val) this.filterKategori = ''; }
+        filterUpbjj(newVal) {
+            if (!newVal) this.filterKategori = ''; 
+        }
     },
     methods: {
-        statusText(item) {
+        getStatusText(item) {
             if (item.qty === 0) return 'Kosong';
             return item.qty < item.safety ? 'Menipis' : 'Aman';
         },
-        statusColor(item) {
+        getStatusClass(item) {
             if (item.qty === 0) return 'text-red';
             return item.qty < item.safety ? 'text-orange' : 'text-green';
         },
         resetFilter() {
             this.filterUpbjj = '';
             this.filterKategori = '';
-            this.onlyReorder = false;
+            this.showLowStock = false;
         },
-        addBahanAjar() {
-            this.stok.push({ ...this.newEntry, catatanHTML: 'Input Manual' });
-            this.newEntry = { kode: '', judul: '', upbjj: 'Jakarta', qty: 0, safety: 0, kategori: 'MK Wajib', lokasiRak: 'TBA' };
-            alert("Berhasil disimpan ke database lokal!");
+        tambahStok() {
+            this.stok.push({...this.newStok, catatanHTML: 'Data Baru'});
+            alert("Data Stok Berhasil Disimpan!");
+            // Reset Form
+            this.newStok = { kode: '', judul: '', upbjj: 'Jakarta', qty: 0, safety: 0, kategori: 'MK Wajib', lokasiRak: 'TBA' };
         }
     }
 });
