@@ -8,51 +8,37 @@
 </head>
 <body>
     <div id="app">
-        <a href="index.html">⬅ Kembali ke Beranda</a>
-        <h2>Input Delivery Order Baru</h2>
+        <a href="index.html">⬅ Kembali</a>
+        <h2>Input Delivery Order</h2>
 
-        <form @submit.prevent="simpanDO">
-            <div>
-                <label>Nomor DO (Auto):</label>
-                <input :value="generatedDoNumber" disabled>
-            </div>
-            <br>
-            <div>
-                <label>NIM:</label>
-                <input v-model="form.nim" required>
-            </div>
-            <br>
-            <div>
-                <label>Nama:</label>
-                <input v-model="form.nama" required>
-            </div>
-            <br>
-            <div>
-                <label>Paket:</label>
-                <select v-model="selectedPaketIndex" required>
-                    <option v-for="(p, index) in paketList" :value="index">
-                        {{ p.kode }} - {{ p.nama }}
-                    </option>
-                </select>
-            </div>
-            <br>
+        <form @submit.prevent="submitDO">
+            <p><strong>Nomor DO:</strong> {{ nextDoNumber }}</p>
+            <input v-model="form.nim" placeholder="NIM" required>
+            <input v-model="form.nama" placeholder="Nama Mahasiswa" required>
+            
+            <label>Paket:</label>
+            <select v-model="selectedPaketIdx" required>
+                <option :value="null">-- Pilih Paket --</option>
+                <option v-for="(p, i) in paket" :value="i">{{ p.kode }} - {{ p.nama }}</option>
+            </select>
 
-            <div v-if="selectedPaketIndex !== null" class="detail-box">
-                <p>Isi Paket: {{ paketList[selectedPaketIndex].isi.join(', ') }}</p>
-                <p>Harga: Rp {{ paketList[selectedPaketIndex].harga }}</p>
+            <div v-if="selectedPaketIdx !== null" class="detail-box">
+                <p><strong>Isi:</strong> {{ paket[selectedPaketIdx].isi.join(', ') }}</p>
+                <p><strong>Total Harga:</strong> Rp {{ paket[selectedPaketIdx].harga }}</p>
             </div>
 
-            <button type="submit">Buat DO</button>
+            <button type="submit">Proses Pengiriman</button>
         </form>
 
-        <hr>
-        <h3>Daftar Tracking Terbaru</h3>
-        <table border="1" width="100%">
-            <tr v-for="(val, key) in tracking">
-                <td>{{ key }}</td>
-                <td>{{ val.nama }} ({{ val.nim }})</td>
-                <td>{{ val.status }}</td>
-                <td>Total: Rp {{ val.total }}</td>
+        <h3>Riwayat Pengiriman</h3>
+        <table>
+            <tr><th>No DO</th><th>NIM</th><th>Nama</th><th>Status</th><th>Total</th></tr>
+            <tr v-for="(data, id) in tracking" :key="id">
+                <td>{{ id }}</td>
+                <td>{{ data.nim }}</td>
+                <td>{{ data.nama }}</td>
+                <td>{{ data.status }}</td>
+                <td>Rp {{ data.total }}</td>
             </tr>
         </table>
     </div>
