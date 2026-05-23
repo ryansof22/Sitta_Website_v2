@@ -5,7 +5,7 @@ new Vue({
             { kode: "PAKET-UT-001", nama: "PAKET IPS Dasar", isi: ["EKMA4116","EKMA4115"], harga: 120000 },
             { kode: "PAKET-UT-002", nama: "PAKET IPA Dasar", isi: ["BIOL4201","FISIP4001"], harga: 140000 }
         ],
-        tracking: {
+        tracking: JSON.parse(localStorage.getItem('sitta_tracking')) || {
             "DO2025-001": { nim: "123456789", nama: "Rina Wulandari", status: "Dalam Perjalanan", total: 120000 }
         },
         form: { nim: '', nama: '' },
@@ -35,4 +35,13 @@ new Vue({
             this.selectedPaketIndex = null;
         }
     }
+    watch: {
+        tracking: {
+            handler(newData) {
+                localStorage.setItem('sitta_tracking', JSON.stringify(newData));
+                console.log("Database Tracking diperbarui");
+            },
+            deep: true
+        }
+    },
 });
