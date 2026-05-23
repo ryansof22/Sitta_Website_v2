@@ -1,18 +1,13 @@
 new Vue({
     el: '#app',
     data: {
-        pengirimanList: [
-            { kode: "REG", nama: "Reguler (3-5 hari)" },
-            { kode: "EXP", nama: "Ekspres (1-2 hari)" }
-        ],
-        paket: [
-            { kode: "PAKET-UT-001", nama: "PAKET IPS Dasar", isi: ["EKMA4116","EKMA4115"], harga: 120000 },
-            { kode: "PAKET-UT-002", nama: "PAKET IPA Dasar", isi: ["BIOL4201","FISIP4001"], harga: 140000 }
-        ],
-        trackingList: {}, // Menyimpan data DO
+        pengirimanList: sourceData.pengirimanList,
+        paket: sourceData.paket,
+        // Sekarang data tracking diawali dengan data yang sudah ada (Rina Wulandari)
+        trackingList: sourceData.tracking, 
         form: { nim: '', nama: '', ekspedisi: '' },
         selectedPaketIndex: -1,
-        sequence: 1
+        sequence: 2 // Mulai dari 2 karena DO2025-001 sudah terpakai
     },
     computed: {
         // Generate Nomor DO otomatis [cite: 53-58]
