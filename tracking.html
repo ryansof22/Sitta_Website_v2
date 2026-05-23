@@ -4,57 +4,63 @@
     <meta charset="UTF-8">
     <title>Tracking DO - SITTA UT</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
 <body>
     <div id="app">
-        <a href="index.html">⬅ Kembali ke Beranda</a>
-        <h2>Input Delivery Order Baru</h2>
+        <div class="navbar">
+            <a href="index.html">Home</a>
+            <a href="stok.html">Stok Bahan Ajar</a>
+            <a href="tracking.html" style="text-decoration: underline;">Tracking DO</a>
+        </div>
 
-        <form @submit.prevent="simpanDO">
-            <div>
-                <label>Nomor DO (Auto):</label>
-                <input :value="generatedDoNumber" disabled>
-            </div>
-            <br>
-            <div>
-                <label>NIM:</label>
-                <input v-model="form.nim" required>
-            </div>
-            <br>
-            <div>
-                <label>Nama:</label>
-                <input v-model="form.nama" required>
-            </div>
-            <br>
-            <div>
-                <label>Paket:</label>
-                <select v-model="selectedPaketIndex" required>
-                    <option v-for="(p, index) in paketList" :value="index">
-                        {{ p.kode }} - {{ p.nama }}
-                    </option>
+        <div style="padding: 20px;">
+            <h2 class="gold-text">Tracking Delivery Order (DO)</h2>
+
+            <div class="card">
+                <h3 class="gold-text">Input DO Baru</h3>
+                <p>Nomor DO: <strong>{{ nextDONumber }}</strong></p>
+                <input v-model="form.nim" placeholder="NIM Mahasiswa">
+                <input v-model="form.nama" placeholder="Nama Mahasiswa">
+                
+                <select v-model="form.ekspedisi">
+                    <option value="">Pilih Ekspedisi</option>
+                    <option v-for="e in pengirimanList" :value="e.nama">{{e.nama}}</option>
                 </select>
+
+                <select v-model="selectedPaketIndex">
+                    <option value="-1">Pilih Paket</option>
+                    <option v-for="(p, index) in paket" :value="index">{{p.kode}} - {{p.nama}}</option>
+                </select>
+
+                <div v-if="selectedPaketIndex !== -1" style="margin-top: 10px; color: #D4AF37;">
+                    <p>Isi Paket: {{ paket[selectedPaketIndex].isi.join(', ') }}</p>
+                    <p>Total Harga: Rp{{ paket[selectedPaketIndex].harga.toLocaleString() }}</p>
+                </div>
+
+                <button @click="simpanDO" style="margin-top: 10px;">Simpan Order</button>
             </div>
-            <br>
 
-            <div v-if="selectedPaketIndex !== null" class="detail-box">
-                <p>Isi Paket: {{ paketList[selectedPaketIndex].isi.join(', ') }}</p>
-                <p>Harga: Rp {{ paketList[selectedPaketIndex].harga }}</p>
-            </div>
-
-            <button type="submit">Buat DO</button>
-        </form>
-
-        <hr>
-        <h3>Daftar Tracking Terbaru</h3>
-        <table border="1" width="100%">
-            <tr v-for="(val, key) in tracking">
-                <td>{{ key }}</td>
-                <td>{{ val.nama }} ({{ val.nim }})</td>
-                <td>{{ val.status }}</td>
-                <td>Total: Rp {{ val.total }}</td>
-            </tr>
-        </table>
+            <h3 class="gold-text">Daftar Pengiriman</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No DO</th>
+                        <th>NIM / Nama</th>
+                        <th>Ekspedisi</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(data, key) in trackingList" :key="key">
+                        <td>{{ key }}</td>
+                        <td>{{ data.nim }} - {{ data.nama }}</td>
+                        <td>{{ data.ekspedisi }}</td>
+                        <td>Rp{{ data.total.toLocaleString() }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script src="js/tracking-app.js"></script>
 </body>
